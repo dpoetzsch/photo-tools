@@ -3,7 +3,7 @@
 require "fileutils"
 
 if ARGV.length < 1
-  puts "Usage: rm-duplicates <duplicates-output-file.txt> <rm>"
+  puts "Usage: rm-duplicates <duplicates-output-file.txt> [rm]"
   exit 1
 end
 
