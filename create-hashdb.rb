@@ -16,6 +16,11 @@ else
   db = {}
 end
 
+# remove deleted files
+db.each do |k,v|
+  db.delete(k) unless File.exists? k
+end
+
 files = Dir[ARGV[0] + "/**/*"].find_all { |f| File.file? f }
 files.each_with_index do |f,i|
   printf("%5d/%5d: %s\n", i+1, files.length, f)

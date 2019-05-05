@@ -14,8 +14,8 @@ ARGV.each do |arg|
 
   db.each do |k,v|
     if File.exists? k
-      invdb[v] ||= []
-      invdb[v].push(k)
+      invdb[v["sha"]] ||= []
+      invdb[v["sha"]].push(k)
     end
   end
 end
