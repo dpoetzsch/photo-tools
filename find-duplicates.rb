@@ -3,7 +3,7 @@
 require "yaml"
 
 if ARGV.length < 1
-  puts "Usage: create-hashdb.rb <dbfile.yaml>*"
+  puts "Usage: find-duplicates.rb <dbfile.yaml>*"
   exit 1
 end
 
