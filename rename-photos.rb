@@ -135,6 +135,10 @@ files.each do |f|
     nametype = "IMG_number"
     number = $1
     comment = $4
+  elsif norm_bname =~ /^YI(\d{6})(_(.*))?$/
+    nametype = "YInumber"
+    number = $1
+    comment = $3
   elsif norm_bname =~ /^PANO_(\d{8})_(\d{6})(_(.*))?$/ && $1.start_with?('20')
     nametype = "PANO_date_time"
     date = dotteddate($1)
