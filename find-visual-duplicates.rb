@@ -25,10 +25,14 @@ db.each_with_index do |v, i|
   f = v[0]
   h = v[1][ALGO]
 
+  next if h.nil?
+
   dups = []
 
   (i+1).upto(db.length - 1).each do |j|
     h2 = db[j][1][ALGO]
+    next if h2.nil?
+
     diff = false
     similar = DHashVips::DHash.hamming(h, h2) < 1 if ALGO == "dhash"
     similar = DHashVips::IDHash.distance(h, h2) < 15 if ALGO == "idhash"
