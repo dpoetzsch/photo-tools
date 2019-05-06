@@ -35,7 +35,7 @@ db.each_with_index do |v, i|
 
     diff = false
     similar = DHashVips::DHash.hamming(h, h2) < 1 if ALGO == "dhash"
-    similar = DHashVips::IDHash.distance(h, h2) < 15 if ALGO == "idhash"
+    similar = DHashVips::IDHash.distance(h, h2) < 1 if ALGO == "idhash"
     dups.push(db[j][0]) if similar
   end
 
