@@ -23,7 +23,7 @@ db.each do |k,v|
   db.delete(k) unless File.exist? k
 end
 
-files = ARGV[1..-1].map { |a| Dir[a] + "/**/*"] }
+files = ARGV[1..-1].map { |a| Dir[a + "/**/*"] }
   .flatten
   .find_all { |f| File.file? f }
   .sort
