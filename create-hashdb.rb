@@ -23,29 +23,29 @@ end
 
 files = Dir[ARGV[0] + "/**/*"].find_all { |f| File.file? f }
 files.each_with_index do |f,i|
-  printf("%5d/%5d: %s\n", i + 1, files.length, f)
+  begin
+    printf("%5d/%5d: %s\n", i + 1, files.length, f)
 
-  next unless File.exist? f
+    next unless File.exist? f
 
-  mtime = File.mtime(f).to_f
-  path = File.expand_path(f)
+    mtime = File.mtime(f).to_f
+    path = File.expand_path(f)
 
-  next unless db[path].nil? || db[path]["mtime"] != mtime
+    next unless db[path].nil? || db[path]["mtime"] != mtime
 
-  db[path] = {
-    "sha" => Digest::SHA2.hexdigest(File.read(f)),
-    "mtime" => File.mtime(f).to_f
-  }
+    db[path] = {
+      "sha" => Digest::SHA2.hexdigest(File.read(f)),
+      "mtime" => File.mtime(f).to_f
+    }
 
-  # algo still has problems with large videos files:
-  # for these we need way too much RAM
-  if f.end_with?(".jpg") || (File.size(f) < 7_000_000) # rubocop:disable Style/Next
-    begin
+    # algo still has problems with large videos files:
+    # for these we need way too much RAM
+    if f.end_with?(".jpg") || (File.size(f) < 7_000_000) # rubocop:disable Style/Next
       db[path]["dhash"] = DHashVips::DHash.calculate(f)
       db[path]["idhash"] = DHashVips::IDHash.fingerprint(f)
-    rescue => e
-      puts e
     end
+  rescue => e
+    puts e
   end
 end
 
