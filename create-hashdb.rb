@@ -19,9 +19,10 @@ else
 end
 
 # remove deleted files
-db.each do |k,v|
-  db.delete(k) unless File.exist? k
-end
+# we don't do this so we can track what files have been deleted
+# db.each do |k,v|
+#   db.delete(k) unless File.exist? k
+# end
 
 files = ARGV[1..-1].map { |a| Dir[a + "/**/*"] }
   .flatten
