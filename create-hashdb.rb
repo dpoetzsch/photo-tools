@@ -5,8 +5,10 @@ require "digest"
 require "dhash-vips"
 
 if ARGV.length < 2
-  puts "Usage: create-hashdb.rb <dbfile.yaml> <folder>*"
+  puts "Usage: create-hashdb.rb <dbfile.yaml> [--dry] [--clean] <folder>*"
   puts "If the db file already exists, it will only be updated."
+  puts "If --clean flag is given, it will remove deleted files from db."
+  puts "If --dry is passed no changes will be written."
   exit 1
 end
 
@@ -18,13 +20,30 @@ else
   db = {}
 end
 
-# remove deleted files
-# we don't do this so we can track what files have been deleted
-# db.each do |k,v|
-#   db.delete(k) unless File.exist? k
-# end
+args = []
+files = []
+nomoreargs = false
+ARGV[1..-1].each do |a|
+  if nomoreargs || !a.start_with?("--")
+    files.push a
+  elsif a == "--"
+    nomoreargs = true
+  else
+    args.push a
+  end
+end
 
-files = ARGV[1..-1].map { |a| Dir[a + "/**/*"] }
+# remove deleted files
+if args.include? "--clean"
+  db.each do |k,v|
+    next if File.exist? k
+
+    puts "Cleaning: #{k}"
+    db.delete(k)
+  end
+end
+
+files = files.map { |a| Dir[a + "/**/*"] }
   .flatten
   .find_all { |f| File.file? f }
   .sort
@@ -57,4 +76,6 @@ files.each_with_index do |f, i|
 end
 
 # write db
-File.open(HASHDB, 'w') { |f| f.write YAML.dump(db) }
+unless args.include? "--dry"
+  File.open(HASHDB, 'w') { |f| f.write YAML.dump(db) }
+end
