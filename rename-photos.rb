@@ -91,7 +91,7 @@ def parse_datetime(date, time, f)
 end
 
 def whatsapp(nametype, bname)
-  nametype.start_with?("WhatsApp:") || (nametype == "david" && bname =~ /WA\d\d\d\d/)
+  nametype.start_with?("WhatsApp:") || (nametype.start_with?("david") && bname =~ /WA\d\d\d\d/)
 end
 
 files = Dir["#{ARGV[0]}/**/*"].find_all { |f| File.file? f }.sort
@@ -110,8 +110,16 @@ files.each do |f|
 
   norm_bname = bname.start_with?("Copy of ") ? bname[8..-1] : bname
 
-  if norm_bname =~ /^(\d\d\d\d\.\d\d\.\d\d)(_(\d\d:\d\d:\d\d))?(_(.*))?$/
+  if norm_bname =~ /^(\d\d\d\d-\d\d-\d\d)(_(\d\d\.\d\d\.\d\d))?(_(.*))?$/
     nametype = "david"
+    date = $1
+    time = $3
+    comment = $5
+
+    date.gsub!("-", ".")
+    time.gsub!(".", ":") unless time.nil?
+  elsif norm_bname =~ /^(\d\d\d\d\.\d\d\.\d\d)(_(\d\d:\d\d:\d\d))?(_(.*))?$/
+    nametype = "davidold"
     date = $1
     time = $3
     comment = $5
@@ -287,7 +295,7 @@ files.each do |f|
 
   # don't do exif for whatsapp, this just makes things more chaotic as
   # the times are broken as hell
-  if !whatsapp(nametype, bname) && nametype != "david" && !nametype.start_with?("USA:")
+  if !whatsapp(nametype, bname) && !nametype.start_with?("david") && !nametype.start_with?("USA:")
     exifdate = fast_exif(f)
     if exifdate
       ndate, ntime = exifdate
@@ -354,10 +362,12 @@ files.each do |f|
   d = data[f]
 
   if d && d[:date] && !d[:date].empty?
-    newname = d[:date] || ""
+    # date is of format YYYY.MM.DD and should be YYYY-MM-DD
+    newname = d[:date].gsub(".", "-")
 
     if d[:time] && !d[:time].empty?
-      newname += "_" + d[:time]
+      # time is of format HH:MM:SS and should be HH.MM.SS (for windows compatibility)
+      newname += "_" + d[:time].gsub(":", ".")
     end
 
     if d[:number] && !d[:number].empty?
