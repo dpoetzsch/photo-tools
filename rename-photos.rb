@@ -288,6 +288,9 @@ files.each do |f|
     number = $1
     number += $3 unless $3.nil?
     comment = $5
+  elsif norm_bname =~ /^(\w+-?\d*?)$/ # e.g. feier-1.jpg
+    nametype = "name-number"
+    comment = $1
   else
     puts "unknown file name format: #{bname}.#{suffix}    (#{f})"
     next
