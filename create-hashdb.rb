@@ -55,7 +55,7 @@ files.each_with_index do |f, i|
     next unless File.exist? f
 
     mtime = File.mtime(f).to_f
-    path = File.expand_path(f)
+    path = File.realpath(File.expand_path(f))
 
     next unless db[path].nil? || db[path]["mtime"] != mtime
 
