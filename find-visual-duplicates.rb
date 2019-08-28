@@ -6,6 +6,9 @@ require "fileutils"
 
 if ARGV.length < 2
   puts "Usage: find-visual-duplicates.rb <dbfile.yaml> <dhash | idhash> [prepare]"
+  puts
+  puts "dhash / idhash are just two measures; probably try them both"
+  puts "prepare: if given, the duplicates will be copied to a tmp folder for review"
   exit 1
 end
 
