@@ -43,7 +43,7 @@ end
 def full_exif(f)
   exif = Exiftool.new(f)
   unless exif.errors?
-    datetime = exif[:date_time_original] || exif[:create_date]
+    datetime = exif[:date_time_original] || exif[:creation_date] || exif[:create_date]
 
     if datetime.to_s =~ /^(\d\d\d\d):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
       year, month, day = $1.to_i, $2.to_i, $3.to_i
