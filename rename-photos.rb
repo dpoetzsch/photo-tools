@@ -161,6 +161,10 @@ files.each do |f|
     nametype = "Pnumber"
     number = $1
     comment = $3
+  elsif norm_bname =~ /^[Pp](\d{7}) \((\d+)\)$/
+    nametype = "Pnumbernumber"
+    number = $1
+    comment = $2
   elsif norm_bname =~ /^PB(\d{6})(_(.*))?$/
     nametype = "PBnumber"
     number = $1
