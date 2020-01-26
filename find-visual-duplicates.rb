@@ -4,17 +4,24 @@ require "yaml"
 require "dhash-vips"
 require "fileutils"
 
-if ARGV.length < 2
-  puts "Usage: find-visual-duplicates.rb <dbfile.yaml> <dhash | idhash> [prepare]"
+db = {}
+
+i = 0
+while i < ARGV.length && ARGV[i] != "dhash" && ARGV[i] != "idheash"
+  db = db.merge(YAML.load(File.read(ARGV[i])))
+  i += 1
+end
+
+if i == ARGV.length
+  puts "Usage: find-visual-duplicates.rb <dbfile.yaml>* <dhash | idhash> [prepare]"
   puts "dhash tends to give quite reasonable results with only a slight overestimation."
   puts "idhash tends to find a lot more duplicates but also more false positives."
   puts "prepare: if given, the duplicates will be copied to a tmp folder for review"
   exit 1
 end
 
-ALGO = ARGV[1]
-
-db = YAML.load(File.read(ARGV[0]))
+ALGO = ARGV[i]
+PREPARE = ARGV[i+1] == "prepare"
 
 db.each do |k,v|
   db.delete(k) unless File.exists? k
@@ -22,7 +29,7 @@ end
 
 db = db.to_a
 
-Dir.mkdir("/tmp/duplicates") if ARGV[2] == "prepare"
+Dir.mkdir("/tmp/duplicates") if PREPARE
 
 db.each_with_index do |v, i|
   f = v[0]
@@ -48,7 +55,7 @@ db.each_with_index do |v, i|
     puts dups
     puts
 
-    if ARGV[2] == "prepare"
+    if PREPARE
       Dir.mkdir "/tmp/duplicates/#{i}"
       FileUtils.cp(f, "/tmp/duplicates/#{i}/")
       dups.each do |d|
