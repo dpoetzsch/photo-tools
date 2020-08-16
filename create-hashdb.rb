@@ -64,7 +64,7 @@ files.each_with_index do |f, i|
 
     db[path] = {
       "sha" => Digest::SHA2.hexdigest(File.read(f)),
-      "mtime" => File.mtime(f).to_f
+      "mtime" => mtime
     }
 
     # algo still has problems with large videos files:
@@ -92,12 +92,12 @@ files.each_with_index do |f, i|
               when 7 then img.flip.rotate(90)
               when 8 then img.rotate(270)
               end
-        f = "/tmp/create_hashdb_rotation_tmp#{Time.now.to_f}.jpg"
-        img.write f
+        ff = "/tmp/create_hashdb_rotation_tmp#{Time.now.to_f}.jpg"
+        img.write ff
         # img.write f + ".rot#{exif.orientation}.jpg" # only for debugging
-        db[path]["dhash_rot"] = DHashVips::DHash.calculate(f)
-        db[path]["idhash_rot"] = DHashVips::IDHash.fingerprint(f)
-        FileUtils.rm(f)
+        db[path]["dhash_rot"] = DHashVips::DHash.calculate(ff)
+        db[path]["idhash_rot"] = DHashVips::IDHash.fingerprint(ff)
+        FileUtils.rm(ff)
       end
     end
   rescue => e

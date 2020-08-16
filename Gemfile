@@ -4,7 +4,7 @@ gem 'bigdecimal'
 gem 'activesupport'
 gem 'dhash-vips'
 gem 'rmagick'
-gem 'exif'
+gem 'exif', "2.2.1"
 gem 'exiftool'
 
 gem 'rubocop'
