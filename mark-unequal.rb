@@ -31,4 +31,6 @@ dups.each do |k, v|
   end
 end
 
-puts YAML.dump(db)
+unless DRY
+  File.open(HASHDB, 'w') { |f| f.write YAML.dump(db) }
+end
