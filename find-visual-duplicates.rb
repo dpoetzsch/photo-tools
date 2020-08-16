@@ -29,10 +29,21 @@ dba = db.to_a
 
 Dir.mkdir("/tmp/duplicates") if PREPARE
 
+def similar(h1, h2)
+  if ALGO == "dhash"
+    DHashVips::DHash.hamming(h1, h2) < 1
+  elsif ALGO == "idhash"
+    DHashVips::IDHash.distance(h1, h2) < 1
+  else
+    raise "Unknown algo: #{ALGO}"
+  end
+end
+
 id_idx = 0
 dba.each_with_index do |v, i|
   f = v[0]
   h = v[1][ALGO]
+  h_rot = v[1][ALGO + "_rot"]
 
   next if h.nil?
 
@@ -40,12 +51,15 @@ dba.each_with_index do |v, i|
 
   (i+1).upto(dba.length - 1).each do |j|
     h2 = dba[j][1][ALGO]
+    h2_rot = dba[j][1][ALGO + "_rot"]
     next if h2.nil?
 
-    diff = false
-    similar = DHashVips::DHash.hamming(h, h2) < 1 if ALGO == "dhash"
-    similar = DHashVips::IDHash.distance(h, h2) < 1 if ALGO == "idhash"
-    dups.push(dba[j][0]) if similar
+    sim = similar(h, h2)
+    sim ||= similar(h_rot, h2) unless h_rot.nil?
+    # sim ||= similar(h, h2_rot) unless h2_rot.nil?
+    # sim ||= similar(h_rot, h2_rot) unless h_rot.nil? || h2_rot.nil?
+
+    dups.push(dba[j][0]) if sim
   end
 
   if dups.length > 0

@@ -3,6 +3,9 @@
 require "yaml"
 require "digest"
 require "dhash-vips"
+require "rmagick"
+require "exif"
+require "fileutils"
 
 if ARGV.length < 2
   puts "Usage: create-hashdb.rb <dbfile.yaml> [--dry] [--clean] <folder>*"
@@ -69,6 +72,33 @@ files.each_with_index do |f, i|
     if f.end_with?(".jpg") || (File.size(f) < 7_000_000) # rubocop:disable Style/Next
       db[path]["dhash"] = DHashVips::DHash.calculate(f)
       db[path]["idhash"] = DHashVips::IDHash.fingerprint(f)
+    end
+
+    # jpg might have a orientation set via exif; we save also the correctly rotated image's hashes
+    if f.end_with?(".jpg")
+      begin
+        exif = File.open(f, 'r') { |ff| Exif::Data.new(ff) }
+      rescue => e
+      end
+      if exif && exif.orientation && exif.orientation > 1
+        # Orientation values: see https://sirv.com/help/articles/rotate-photos-to-be-upright/
+        img = Magick::Image::read(f).first
+        img = case exif.orientation
+              when 2 then img.flip.rotate(180)
+              when 3 then img.rotate(180)
+              when 4 then img.flip
+              when 5 then img.flip.rotate(270)
+              when 6 then img.rotate(90)
+              when 7 then img.flip.rotate(90)
+              when 8 then img.rotate(270)
+              end
+        f = "/tmp/create_hashdb_rotation_tmp#{Time.now.to_f}.jpg"
+        img.write f
+        # img.write f + ".rot#{exif.orientation}.jpg" # only for debugging
+        db[path]["dhash_rot"] = DHashVips::DHash.calculate(f)
+        db[path]["idhash_rot"] = DHashVips::IDHash.fingerprint(f)
+        FileUtils.rm(f)
+      end
     end
   rescue => e
     puts e

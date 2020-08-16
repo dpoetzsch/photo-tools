@@ -24,6 +24,7 @@ GEM
     parser (2.6.3.0)
       ast (~> 2.4.0)
     rainbow (3.0.0)
+    rmagick (4.1.2)
     rubocop (0.71.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -48,6 +49,7 @@ DEPENDENCIES
   dhash-vips
   exif
   exiftool
+  rmagick
   rubocop
 
 BUNDLED WITH
