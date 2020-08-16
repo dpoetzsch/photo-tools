@@ -3,14 +3,16 @@
 require "yaml"
 require "dhash-vips"
 require "fileutils"
+require "./lib-dups.rb"
 
-db = {}
-
+db_files = []
 i = 0
-while i < ARGV.length && ARGV[i] != "dhash" && ARGV[i] != "idheash"
-  db = db.merge(YAML.load(File.read(ARGV[i])))
+while i < ARGV.length && ARGV[i] != "dhash" && ARGV[i] != "idhash"
+  db_files.push ARGV[i]
   i += 1
 end
+
+db = cleanup_db(merge_dbs(db_files))
 
 if i == ARGV.length
   puts "Usage: find-visual-duplicates.rb <dbfile.yaml>* <dhash | idhash> [prepare]"
@@ -23,15 +25,12 @@ end
 ALGO = ARGV[i]
 PREPARE = ARGV[i+1] == "prepare"
 
-db.each do |k,v|
-  db.delete(k) unless File.exists? k
-end
-
-db = db.to_a
+dba = db.to_a
 
 Dir.mkdir("/tmp/duplicates") if PREPARE
 
-db.each_with_index do |v, i|
+id_idx = 0
+dba.each_with_index do |v, i|
   f = v[0]
   h = v[1][ALGO]
 
@@ -39,28 +38,29 @@ db.each_with_index do |v, i|
 
   dups = []
 
-  (i+1).upto(db.length - 1).each do |j|
-    h2 = db[j][1][ALGO]
+  (i+1).upto(dba.length - 1).each do |j|
+    h2 = dba[j][1][ALGO]
     next if h2.nil?
 
     diff = false
     similar = DHashVips::DHash.hamming(h, h2) < 1 if ALGO == "dhash"
     similar = DHashVips::IDHash.distance(h, h2) < 1 if ALGO == "idhash"
-    dups.push(db[j][0]) if similar
+    dups.push(dba[j][0]) if similar
   end
 
   if dups.length > 0
-    puts "Duplicates #{i}:"
-    puts f
-    puts dups
-    puts
+    remove_false_positives(db, [f] + dups).each do |d|
+      print_dups(id_idx, d)
 
-    if PREPARE
-      Dir.mkdir "/tmp/duplicates/#{i}"
-      FileUtils.cp(f, "/tmp/duplicates/#{i}/")
-      dups.each do |d|
-        FileUtils.cp(d, "/tmp/duplicates/#{i}/")
+      if PREPARE
+        Dir.mkdir "/tmp/duplicates/#{id_idx}"
+        FileUtils.cp(f, "/tmp/duplicates/#{id_idx}/")
+        dups.each do |d|
+          FileUtils.cp(d, "/tmp/duplicates/#{id_idx}/")
+        end
       end
+
+      id_idx += 1
     end
   end
 end
