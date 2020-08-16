@@ -32,8 +32,12 @@ def remove_false_positives(db, duplicates)
 
   # Now, remove all equalities that are known to be unequal
   duplicates.each do |d|
-    uqs = db[d]["unequal_to"] || []
-    equalities -= uqs.map { |e| Set.new [d, e] }
+    uqs = db[d]["unequal_to"] || {}
+
+    # filter out all outdated entries
+    uqs = uqs.find_all { |k, v| v["mtime"] == File.mtime(k).to_f }
+
+    equalities -= uqs.map { |e| Set.new [d, e[0]] }
   end
 
   # Finally rebuild the duplicate sets

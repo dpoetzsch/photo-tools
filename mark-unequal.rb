@@ -25,9 +25,8 @@ dups.each do |k, v|
 
   v.combination(2).each do |e|
     e.sort!
-    db[e[0]]["unequal_to"] ||= []
-    db[e[0]]["unequal_to"].push(e[1])
-    db[e[0]]["unequal_to"].uniq!
+    db[e[0]]["unequal_to"] ||= {}
+    db[e[0]]["unequal_to"][e[1]] = { "mtime" => File.mtime(e[1]).to_f }
   end
 end
 
