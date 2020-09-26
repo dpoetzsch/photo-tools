@@ -143,6 +143,10 @@ files.each do |f|
     nametype = "IMG_number"
     number = $1
     comment = $4
+  elsif norm_bname =~ /^IMG_(\d\d\d\d)(~(photo|video))$/
+    nametype = "IMG_number~type"
+    number = $1
+    comment = $4
   elsif norm_bname =~ /^YI(\d{6})(_(.*))?$/
     nametype = "YInumber"
     number = $1
@@ -295,6 +299,9 @@ files.each do |f|
   elsif norm_bname =~ /^(\w+-?\d*?)$/ # e.g. feier-1.jpg
     nametype = "name-number"
     comment = $1
+  elsif norm_bname =~ /^(\w{8}-\w{4}-\w{4}-\w{4}-\w{12})$/ # e.g. E3AFC2B5-F070-4696-8422-A926D2B94F79.jpeg
+    nametype = "iphoneid"
+    number = $1
   else
     puts "unknown file name format: #{bname}.#{suffix}    (#{f})"
     next
