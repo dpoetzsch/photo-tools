@@ -235,6 +235,11 @@ files.each do |f|
     time = dottedtime($2)
     number = $3
     comment = $5
+  elsif norm_bname =~ /^PXL_(\d{8})_(\d{6})(\d{3}(\..*)?)$/
+    nametype = "PXL"
+    date = dotteddate($1)
+    time = dottedtime($2)
+    comment = $3.gsub(".", "-")
   elsif norm_bname =~ /^VID-(\d{8})-(WA\d\d\d\d)((_|-)(.*))?$/ && $1.start_with?('20')
     nametype = "WhatsApp:VID-date-number"
     date = dotteddate($1)
