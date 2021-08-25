@@ -128,6 +128,12 @@ files.each do |f|
     date = dotteddate($1)
     time = dottedtime($2)
     comment = $4
+  elsif norm_bname =~ /^IMG_(\d{8})_(\d{6})~(\d)(_(.*))?$/ && $1.start_with?('20')
+    nametype = "IMG_date_time~number"
+    date = dotteddate($1)
+    time = dottedtime($2)
+    number = $3
+    comment = $5
   elsif norm_bname =~ /^IMG_(\d{8})_(\d{6})(\d\d\d)(_(.*))?$/ && $1.start_with?('20')
     nametype = "IMG_date_timenumber"
     date = dotteddate($1)
