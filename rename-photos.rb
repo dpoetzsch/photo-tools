@@ -48,15 +48,21 @@ def full_exif(f)
     if datetime.to_s =~ /^(\d\d\d\d):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/
       year, month, day = $1.to_i, $2.to_i, $3.to_i
       hour, min, sec = $4.to_i, $5.to_i, $6.to_i
-    elsif datetime.to_s =~ /^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) (.\d\d\d\d)$/
+      zone = []
+    elsif datetime.to_s =~ /^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) (.)(\d\d)(\d\d)$/
       year, month, day = $1.to_i, $2.to_i, $3.to_i
       hour, min, sec = $4.to_i, $5.to_i, $6.to_i
+      zone = [$7, $8.to_i, $9.to_i]
     else
       return nil
     end
 
     # switch zone
-    t = Time.utc(year, month, day, hour, min, sec).in_time_zone("Berlin")
+    if zone.empty?
+      t = Time.utc(year, month, day, hour, min, sec).in_time_zone("Berlin")
+    else
+      t = Time.utc(year, month, day, hour, min, sec) # already in local time
+    end
     year, month, day = t.year, t.month, t.day
     hour, min, sec = t.hour, t.min, t.sec
 
