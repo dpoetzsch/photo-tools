@@ -41,6 +41,8 @@ end
 
 id_idx = 0
 dba.each_with_index do |v, i|
+  puts "# Processing... [#{i} / #{dba.length}]" if (i % 1000) == 0
+
   f = v[0]
   h = v[1][ALGO]
   h_rot = v[1][ALGO + "_rot"]
