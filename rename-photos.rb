@@ -332,7 +332,7 @@ files.each do |f|
       ndate, ntime = exifdate
       if date && ndate != date
         puts "WARN: file date was #{date} but exif date was #{ndate} for    #{f}"
-      elsif time && (parse_datetime(date, time, f) - parse_datetime(ndate, ntime, f)).abs > 1
+      elsif time && (parse_datetime(date, time, f) - parse_datetime(ndate, ntime, f)).abs > 5 # 5 seconds tolerance due to save times etc.
         puts "WARN: file time was #{time} but exif time was #{ntime} for    #{f}"
       end
       date, time = ndate, ntime
