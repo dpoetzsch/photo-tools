@@ -19,6 +19,22 @@ def dottedtime(time)
   time[0..1] + ':' + time[2..3] + ':' + time[4..5]
 end
 
+def time2str(t)
+  year, month, day = t.year, t.month, t.day
+  hour, min, sec = t.hour, t.min, t.sec
+
+  # format
+  date = format("%04d.%02d.%02d", year, month, day)
+  time = format("%02d:%02d:%02d", hour, min, sec)
+
+  return [date, time]
+end
+
+def utc2cet(date, time)
+  t = Time.utc(*(date.split(".") + time.split(":"))).in_time_zone("Berlin")
+  return time2str(t)
+end
+
 def fast_exif(f)
   begin
     exif = File.open(f, 'r') { |ff| Exif::Data.new(ff) }
@@ -63,14 +79,8 @@ def full_exif(f)
     else
       t = Time.utc(year, month, day, hour, min, sec) # already in local time
     end
-    year, month, day = t.year, t.month, t.day
-    hour, min, sec = t.hour, t.min, t.sec
 
-    # format
-    date = format("%04d.%02d.%02d", year, month, day)
-    time = format("%02d:%02d:%02d", hour, min, sec)
-
-    return [date, time]
+    return time2str(t)
   end
   return nil
 end
@@ -247,11 +257,14 @@ files.each do |f|
     time = dottedtime($2)
     number = $3
     comment = $5
-  elsif norm_bname =~ /^PXL_(\d{8})_(\d{6})(\d{3}(\..*)?)$/
+  elsif norm_bname =~ /^PXL_(\d{8})_(\d{6})(\d{3}(\..*)?(~\d+)?)$/
     nametype = "PXL"
     date = dotteddate($1)
     time = dottedtime($2)
-    comment = $3.gsub(".", "-")
+    comment = $3.gsub(".", "-").gsub("~", "-")
+
+    # Google Pixel uses UTC instead of local time; correct it to Berlin Time
+    date, time = utc2cet(date, time)
   elsif norm_bname =~ /^VID-(\d{8})-(WA\d\d\d\d)((_|-)(.*))?$/ && $1.start_with?('20')
     nametype = "WhatsApp:VID-date-number"
     date = dotteddate($1)
