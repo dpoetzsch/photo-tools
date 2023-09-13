@@ -13,7 +13,7 @@ end
 
 def cleanup_db(db)
   db.each do |k,v|
-    db.delete(k) unless File.exists? k
+    db.delete(k) unless File.exist? k
   end
 end
 
