@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi
 
 
-HEIC_ARCHIVE="/run/media/dph/media0/nextcloud/heic-archive"
+HEIC_ARCHIVE="/run/media/dph/lake/nextcloud/heic-archive"
 UUID=`uuid`
 
 if [ -d "$HEIC_ARCHIVE/$UUID" ]; then
