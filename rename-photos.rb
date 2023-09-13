@@ -257,11 +257,19 @@ files.each do |f|
     time = dottedtime($2)
     number = $3
     comment = $5
-  elsif norm_bname =~ /^PXL_(\d{8})_(\d{6})(\d{3}(\..*)?(~\d+)?)$/
+  elsif norm_bname =~ /^PXL_(\d{8})_(\d{6})(\d{3}(\..*)?(~\d+)?(-PANO)?)$/
     nametype = "PXL"
     date = dotteddate($1)
     time = dottedtime($2)
     comment = $3.gsub(".", "-").gsub("~", "-")
+
+    # Google Pixel uses UTC instead of local time; correct it to Berlin Time
+    date, time = utc2cet(date, time)
+  elsif norm_bname =~ /^(original_.+?)_PXL_(\d{8})_(\d{6})(\d{3}(\..*)?(~\d+)?)$/
+    nametype = "PXL"
+    date = dotteddate($2)
+    time = dottedtime($3)
+    comment = $1 + "_" + $4.gsub(".", "-").gsub("~", "-")
 
     # Google Pixel uses UTC instead of local time; correct it to Berlin Time
     date, time = utc2cet(date, time)
