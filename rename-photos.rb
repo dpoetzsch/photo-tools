@@ -161,10 +161,10 @@ files.each do |f|
     date = dotteddate($1)
     number = $2
     comment = $4
-  elsif norm_bname =~ /^IMG_(E?\d\d\d\d(-\d+)?)((_| )(.*))?$/
+  elsif norm_bname =~ /^IMG_(E?\d\d\d\d(-\d+)?)((_| |-)(.*))?$/
     nametype = "IMG_number"
     number = $1
-    comment = $4
+    comment = $5
   elsif norm_bname =~ /^IMG_(\d\d\d\d)(~(photo|video))$/
     nametype = "IMG_number~type"
     number = $1
