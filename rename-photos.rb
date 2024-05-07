@@ -290,6 +290,11 @@ files.each do |f|
     time = dottedtime($2)
     number = $4
     comment = $6
+  elsif norm_bname =~ /^(\d\d)-(\d\d)-(\d\d) (\d\d)-(\d\d)-(\d\d) (\d+)$/ # e.g. 24-03-09 14-32-11 1948.jpg
+    nametype = "date_time_dashed"
+    date = dotteddate("20" + $1 + $2 + $3)
+    time = dottedtime($4 + $5 + $6)
+    number = $7
   elsif norm_bname =~ /^Photo ([A-Za-z]+) (\d\d?), (\d\d?) (\d\d?) (\d\d?)$/ # e.g. Photo 7-18-15, 1 03 32 PM.jpg
     nametype = "USA:Photo partial_date, time"
     time = format("%02d:%02d:%02d", $3.to_i, $4.to_i, $5.to_i)
