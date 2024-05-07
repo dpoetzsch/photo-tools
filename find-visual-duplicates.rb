@@ -15,14 +15,20 @@ end
 db = cleanup_db(merge_dbs(db_files))
 
 if i == ARGV.length
-  puts "Usage: find-visual-duplicates.rb <dbfile.yaml>* <dhash | idhash> [prepare]"
+  puts "Usage: find-visual-duplicates.rb <dbfile.yaml>* <dhash | idhash> [--ignore-within] [prepare]"
   puts "dhash tends to give quite reasonable results with only a slight overestimation."
   puts "idhash tends to find a lot more duplicates but also more false positives."
+  puts "--ignore-within: if given, the algorithm will not compare images that are within the same hashdb"
   puts "prepare: if given, the duplicates will be copied to a tmp folder for review"
   exit 1
 end
 
 ALGO = ARGV[i]
+ignore_within = false
+if ARGV[i+1] == "--ignore-within"
+  ignore_within = true
+  i += 1
+end
 PREPARE = ARGV[i+1] == "prepare"
 
 dba = db.to_a
@@ -41,17 +47,21 @@ end
 
 id_idx = 0
 dba.each_with_index do |v, i|
-  puts "# Processing... [#{i} / #{dba.length}]" if (i % 1000) == 0
+  STDERR.puts "# Processing... [#{i} / #{dba.length}]" if (i % 1000) == 0
 
   f = v[0]
   h = v[1][ALGO]
   h_rot = v[1][ALGO + "_rot"]
+
+  origin_hashdb = v[1]["origin_hashdb"]
 
   next if h.nil?
 
   dups = []
 
   (i+1).upto(dba.length - 1).each do |j|
+    next if ignore_within && dba[j][1]["origin_hashdb"] == origin_hashdb
+
     h2 = dba[j][1][ALGO]
     h2_rot = dba[j][1][ALGO + "_rot"]
     next if h2.nil?

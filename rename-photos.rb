@@ -295,6 +295,11 @@ files.each do |f|
     date = dotteddate("20" + $1 + $2 + $3)
     time = dottedtime($4 + $5 + $6)
     number = $7
+  elsif norm_bname =~ /^Screenshot from (\d\d\d\d)-(\d\d)-(\d\d) (\d\d)-(\d\d)-(\d\d)$/ # e.g. Screenshot from 2016-03-24 14-32-11.png
+    nametype = "Screenshot date_time"
+    date = dotteddate($1 + $2 + $3)
+    time = dottedtime($4 + $5 + $6)
+    comment = "Screenshot"
   elsif norm_bname =~ /^Photo ([A-Za-z]+) (\d\d?), (\d\d?) (\d\d?) (\d\d?)$/ # e.g. Photo 7-18-15, 1 03 32 PM.jpg
     nametype = "USA:Photo partial_date, time"
     time = format("%02d:%02d:%02d", $3.to_i, $4.to_i, $5.to_i)

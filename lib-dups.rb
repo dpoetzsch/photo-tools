@@ -5,7 +5,14 @@ def merge_dbs(db_files)
   db = {}
 
   db_files.each do |db_file|
-    db = db.merge(YAML.load(File.read(db_file)))
+    yaml = YAML.load(File.read(db_file))
+
+    # mark origins
+    yaml.each do |k,v|
+      yaml[k]["origin_hashdb"] = db_file
+    end
+
+    db = db.merge(yaml)
   end
 
   db
