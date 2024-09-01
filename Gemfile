@@ -8,3 +8,4 @@ gem 'exif', "2.2.1"
 gem 'exiftool'
 
 gem 'rubocop'
+gem 'code-scanning-rubocop'
