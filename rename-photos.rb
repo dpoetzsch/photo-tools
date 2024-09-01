@@ -6,8 +6,20 @@ require 'fileutils'
 require "date"
 require "active_support/time"
 
-if ARGV.empty?
+if ARGV.empty? || ARGV.include?("--help") || ARGV.include?("-h")
   puts 'Usage: rename-photos.rb <dir> [rename]'
+  puts
+  puts 'Renames photos in the given directory to a standard filename.'
+  puts 'This script will try to guess the date and time of the photo from the filename '
+  puts 'and EXIF data.'
+  puts 'The resulting output filename will be of the format:'
+  puts '  YYYY-MM-DD[_HH.MM.SS][_number][_comment].ext'
+  puts
+  puts 'Arguments:'
+  puts '     dir: The directory containing the photos to rename.'
+  puts '          Subdirectories will be included.'
+  puts '  rename: If specified, the files will be renamed.'
+  puts '          Otherwise, only the new names will be printed ("dry run").'
   exit 1
 end
 

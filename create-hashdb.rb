@@ -7,11 +7,20 @@ require "rmagick"
 require "exif"
 require "fileutils"
 
-if ARGV.length < 2
-  puts "Usage: create-hashdb.rb <dbfile.yaml> [--dry] [--clean] <folder>*"
-  puts "If the db file already exists, it will only be updated."
-  puts "If --clean flag is given, it will remove deleted files from db."
-  puts "If --dry is passed no changes will be written."
+HELPTEXT = <<HELP
+Usage: create-hashdb.rb <hashdb.yaml> [--dry] [--clean] <folder>*
+
+Hash all images in a folder and write the hashes to a hashdb file.
+If the db file already exists, it will only be updated.
+
+Arguments:
+  hashdb.yaml: The file to write the hashes to.
+      --clean: If set, this script will remove deleted files from db.
+        --dry: If set, no changes will be written.
+HELP
+
+if ARGV.length < 2 || ARGV.include?("--help") || ARGV.include?("-h")
+  puts HELPTEXT
   exit 1
 end
 

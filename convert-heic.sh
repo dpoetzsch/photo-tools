@@ -1,12 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ -z "$1" ]; then
+HEIC_ARCHIVE="/run/media/dph/lake/nextcloud/heic-archive"
+
+if [ "$1" = "" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   echo "Usage: convert-heic.sh <directory with heic files>"
+  echo
+  echo "Converts all HEIC files in the given directory to JPEG, and moves the"
+  echo "HEIC files to a new subdirectoy in $HEIC_ARCHIVE."
+  echo "This script does not overwrite existing files."
+  echo
+  echo "This script requires the 'heif-convert' and 'exiftool' commands."
   exit 1
 fi
 
-
-HEIC_ARCHIVE="/run/media/dph/lake/nextcloud/heic-archive"
 UUID=`uuid`
 
 if [ -d "$HEIC_ARCHIVE/$UUID" ]; then
