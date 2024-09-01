@@ -1,6 +1,6 @@
 # photo-tools
 
-This repository contains a collection of scripts to manage photos.
+This repository contains a collection of scripts to manage photos, especially to find duplicates and visually similar images.
 The following tools are available:
 
 - `convert-heic.sh` converts HEIC files to JPEG
