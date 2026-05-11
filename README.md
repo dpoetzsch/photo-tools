@@ -21,7 +21,7 @@ Also, see below for an overview on how to find and process duplicate images usin
 Under fedora do the following:
 
 ```bash
-sudo dnf install ruby-devel libexif-devel perl-Image-ExifTool vips vips-devel libheif-tools
+sudo dnf install ruby-devel libexif-devel perl-Image-ExifTool vips vips-devel libheif-tools ImageMagick-devel gcc-c++
 bundler
 ```
 

@@ -1,7 +1,8 @@
-require: rubocop-rspec
+# require: rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 3.2
+  NewCops: enable
   Exclude:
     - 'db/schema.rb'
     - 'bin/*'
@@ -11,8 +12,8 @@ AllCops:
 Layout/EmptyLines:
   Enabled: false
 
-Style/MethodMissing:
-  Enabled: false
+Layout/LineLength:
+  Max: 120
 
 Style/Documentation:
   Enabled: false
@@ -21,6 +22,9 @@ Style/StringLiterals:
   Enabled: false
 
 Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+Style/StringConcatenation:
   Enabled: false
 
 Style/SymbolArray:
@@ -35,32 +39,29 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Max: 150
 
-Metrics/LineLength:
-  Max: 120
-
 Metrics/MethodLength:
   Max: 20
 
 Metrics/BlockLength:
   Enabled: false
 
-RSpec/ExampleLength:
-  Max: 15
+# RSpec/ExampleLength:
+#   Max: 15
 
-RSpec/NamedSubject:
-  Enabled: false
+# RSpec/NamedSubject:
+#   Enabled: false
 
-RSpec/ScatteredSetup:
-  Enabled: false
+# RSpec/ScatteredSetup:
+#   Enabled: false
 
-RSpec/MessageSpies:
-  Enabled: false
+# RSpec/MessageSpies:
+#   Enabled: false
 
-RSpec/MultipleExpectations:
-  Max: 5
+# RSpec/MultipleExpectations:
+#   Max: 5
 
-RSpec/MultipleSubjects:
-  Enabled: false
+# RSpec/MultipleSubjects:
+#   Enabled: false
 
-RSpec/NestedGroups:
-  Max: 5
+# RSpec/NestedGroups:
+#   Max: 5
